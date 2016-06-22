@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/chkakaja/sentimize.svg?branch=master)](https://travis-ci.org/chkakaja/sentimize)
+[![Build Status](https://travis-ci.org/gobble43/gobble-product-builder.svg?branch=master)](https://travis-ci.org/gobble43/gobble-product-builder)
 
-[![Stories in Ready](https://badge.waffle.io/chkakaja/sentimize.png?label=ready&title=Ready)](https://waffle.io/chkakaja/sentimize)
+[![Stories in Ready](https://badge.waffle.io/gobble43/gobble-product-builder.png?label=ready&title=Ready)](https://waffle.io/gobble43/gobble-product-builder)
 
 # Microservice Name
 gobble-product-builder
