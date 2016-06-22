@@ -36,6 +36,19 @@ describe('Gobble Product Builder', () => {
           return done();
         });
     });
+    it('should return status code 400 for invalid upc', (done) => {
+      const upc = { upc: undefined };
+      request(appUrl)
+        .post('/api/product')
+        .type('form')
+        .set('Accept', 'application/json')
+        .send(upc)
+        .expect(400)
+        .end((err) => {
+          if (err) return done(err);
+          return done();
+        });
+    });
   });
   // More tests (as in A LOT more!) and describe blocks below
 });
