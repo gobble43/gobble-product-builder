@@ -58,7 +58,7 @@ const masterJob = () => {
       checkOnHTTPServer();
       checkOnProductDataWorker();
     };
-
+    masterLoop();
     setInterval(masterLoop, 2000);
   });
 };
