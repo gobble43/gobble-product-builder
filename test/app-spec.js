@@ -1,6 +1,6 @@
 require('./setup');
-const expect = require('chai').expect;
-const path = require('path');
+// const expect = require('chai').expect;
+// const path = require('path');
 
 // We're using supertest, which allows for use of any super-agent methods
 // and really easy HTTP assertions.
