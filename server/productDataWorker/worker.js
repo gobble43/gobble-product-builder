@@ -20,7 +20,7 @@ const getDataForProduct = (upc, callback) => {
         product.name = productData.product_name;
         product.brand = productData.brands;
         product.categories = productData.categories_hierarchy;
-        for (var i = 0; i < product.categories.length; i++) {
+        for (let i = 0; i < product.categories.length; i++) {
           product.categories[i] = product.categories[i].slice(3);
         }
         product.tags = productData._keywords;
