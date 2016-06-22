@@ -1,7 +1,8 @@
+require('babel-polyfill');
 const cluster = require('cluster');
 
 const workers = {};
-var redisClient;
+let redisClient;
 
 const checkOnHTTPServer = () => {
   if (workers.httpServer === undefined) {
@@ -57,7 +58,7 @@ const masterJob = () => {
       checkOnHTTPServer();
       checkOnProductDataWorker();
     };
-
+    masterLoop();
     setInterval(masterLoop, 2000);
   });
 };
