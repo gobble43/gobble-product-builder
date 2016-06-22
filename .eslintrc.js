@@ -9,5 +9,6 @@ module.exports = {
     "no-undef": 0, // allow undefined 'describe' function from mocha
     "global-require": 0, // needed for cluster architecture
     "no-underscore-dangle": 0, // needed for parsing an api response
+    "no-param-reassign": 0,
   }
 };
