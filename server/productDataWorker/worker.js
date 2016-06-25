@@ -1,7 +1,8 @@
 
 const Promise = require('bluebird');
-
-const redis = Promise.promisifyAll(require('redis'));
+const redis = require('redis');
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
 const redisClient = redis.createClient();
 
 const request = require('superagent');
@@ -81,7 +82,6 @@ const workerJob = () => {
   process.on('message', (message) => {
     console.log('recieved message from the master', message);
   });
-
   const workerLoop = () => {
     redisClient.llenAsync('addProduct')
       .then((length) => {
@@ -90,31 +90,29 @@ const workerJob = () => {
         } else {
           redisClient.rpopAsync('addProduct')
             .then((upc) => {
-              getDataForProductAsync(upc)
-                .then((productData) => {
-                  console.log('sending product data to database',
-                    JSON.stringify(productData));
-                  // request
-                  //   .post('')
-                  //   .type('form')
-                  //   .send({})
-                  //   .end((err, res) => {
-                  //     console.log(res);
-                  //   });
-                  workerLoop();
-                })
-                .catch((err) => {
-                  console.error(err);
-                  workerLoop();
-                });
+              console.log(upc);
+              return getDataForProductAsync(upc);
+            })
+            .then((productData) => {
+              console.log('sending product data to database',
+                JSON.stringify(productData));
+              // request
+              //   .post('')
+              //   .type('form')
+              //   .send({})
+              //   .end((err, res) => {
+              //     console.log(res);
+              //   });
+              workerLoop();
             })
             .catch((err) => {
-              console.log(err);
+              workerLoop();
+              console.error(err);
             });
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   workerLoop();
