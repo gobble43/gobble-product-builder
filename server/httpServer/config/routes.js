@@ -5,7 +5,7 @@ module.exports = (app) => {
   });
   app.post('/api/product', (req, res) => {
     console.log('form body', req.body);
-    if (typeof req.body.upc === 'string') {
+    if (req.body.upc) {
       process.send(req.body);
       res.statusCode = 201;
       res.end();
