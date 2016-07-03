@@ -1,16 +1,29 @@
 
+const dotenv = require('dotenv');
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config({ path: './env/development.env' });
+} else if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: './env/production.env' });
+}
+
 const Promise = require('bluebird');
 const redis = require('redis');
 Promise.promisifyAll(redis.RedisClient.prototype);
 Promise.promisifyAll(redis.Multi.prototype);
 const redisClient = redis.createClient();
 
+const fetch = require('isomorphic-fetch');
 const request = require('superagent');
 
+const gobbleDB = process.env.GOBBLE_DB_URL;
+
 const getDataForProduct = (upc, callback) => {
-  console.log(upc);
+  let upcString = upc.toString();
+  while (upcString.length < 12) {
+    upcString = `0${upcString}`;
+  }
   request
-    .get(`http://world.openfoodfacts.org/api/v0/product/${upc}.json`)
+    .get(`http://world.openfoodfacts.org/api/v0/product/${upcString}.json`)
     .end((err, res) => {
       const product = {};
       if (res.body.status === 0) {
@@ -26,6 +39,8 @@ const getDataForProduct = (upc, callback) => {
         }
         product.tags = productData._keywords;
         product.ingredients = productData.ingredients_tags;
+
+        product.image = productData.image_url;
 
         const productNutriments = res.body.product.nutriments;
         product.energy = productNutriments.energy_100g;
@@ -46,6 +61,7 @@ const getDataForProduct = (upc, callback) => {
         product.sodium = productNutriments.sodium_100g;
         product.alcohol = productNutriments.alcohol_100g;
         product.vitamina = productNutriments.vitamina_100g;
+        product.vitaminc = productNutriments.vitaminc_100g;
         product.vitamind = productNutriments.vitamind_100g;
         product.vitamine = productNutriments.vitamine_100g;
         product.vitamink = productNutriments.vitamink_100g;
@@ -96,13 +112,20 @@ const workerJob = () => {
             .then((productData) => {
               console.log('sending product data to database',
                 JSON.stringify(productData));
-              // request
-              //   .post('')
-              //   .type('form')
-              //   .send({})
-              //   .end((err, res) => {
-              //     console.log(res);
-              //   });
+              fetch(`${gobbleDB}/db/product`, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData),
+              })
+              .then((res) => {
+                // console.log(res);
+              })
+              .catch((err) => {
+                console.err(err);
+              });
               workerLoop();
             })
             .catch((err) => {
