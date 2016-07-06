@@ -22,6 +22,7 @@ const getDataForProduct = (upc, callback) => {
   while (upcString.length < 12) {
     upcString = `0${upcString}`;
   }
+  console.log('string' , upcString);
   request
     .get(`http://world.openfoodfacts.org/api/v0/product/${upcString}.json`)
     .end((err, res) => {
